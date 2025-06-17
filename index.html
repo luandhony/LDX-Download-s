@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LDX Download's - Tema Claro/Escuro</title>
+  <style>
+    /* Cores do modo claro */
+    :root {
+      --bg-color-light: #f5f5f5;
+      --header-bg-light: #8e44ad;
+      --header-text-light: #fff;
+      --card-bg-light: #fff;
+      --card-shadow-light: rgba(0, 0, 0, 0.1);
+      --text-color-light: #333;
+      --desc-color-light: #666;
+      --btn-bg-light: #8e44ad;
+      --btn-text-light: #fff;
+      --btn-hover-bg-light: #732d91;
+    }
+
+    /* Cores do modo escuro */
+    :root {
+      --bg-color-dark: #121212;
+      --header-bg-dark: #7332a1;
+      --header-text-dark: #eee;
+      --card-bg-dark: #1e1e1e;
+      --card-shadow-dark: rgba(0, 0, 0, 0.7);
+      --text-color-dark: #ddd;
+      --desc-color-dark: #bbb;
+      --btn-bg-dark: #7b3fbf;
+      --btn-text-dark: #fff;
+      --btn-hover-bg-dark: #9c63ff;
+    }
+
+    /* Estilo base usa o modo claro por padrão */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color-light);
+      color: var(--text-color-light);
+      transition: background-color 0.4s, color 0.4s;
+    }
+
+    header {
+      background-color: var(--header-bg-light);
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      color: var(--header-text-light);
+      box-shadow: 0 0 10px var(--header-bg-light);
+      position: relative;
+    }
+
+    /* Botão de troca */
+    #toggleThemeBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: var(--btn-bg-light);
+      color: var(--btn-text-light);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    #toggleThemeBtn:hover {
+      background-color: var(--btn-hover-bg-light);
+    }
+
+    .search-container {
+      text-align: center;
+      margin: 30px 0 10px;
+    }
+
+    .search-input, .category-select {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      margin: 5px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus, .category-select:focus {
+      border-color: var(--header-bg-light);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px 40px 60px;
+    }
+
+    .app-card {
+      background-color: var(--card-bg-light);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px var(--card-shadow-light);
+      transition: transform 0.3s, box-shadow 0.3s;
+      color: var(--text-color-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .app-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px var(--btn-bg-light);
+    }
+
+    .app-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 15px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #eee;
+      padding: 5px;
+      transition: background-color 0.4s;
+    }
+
+    .app-title {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: var(--header-bg-light);
+      font-weight: 600;
+      transition: color 0.4s;
+    }
+
+    .app-description {
+      font-size: 0.9em;
+      color: var(--desc-color-light);
+      flex-grow: 1;
+      transition: color 0.4s;
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: var(--btn-bg-light);
+      color: var(--btn-text-light);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+
+    .download-btn:hover {
+      background-color: var(--btn-hover-bg-light);
+    }
+
+    /* Animação de download */
+    .downloading {
+      position: relative;
+      pointer-events: none;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 8px 2px var(--btn-hover-bg-light);
+      }
+      50% {
+        box-shadow: 0 0 20px 6px var(--btn-bg-light);
+      }
+    }
+
+    /* ----- Modo escuro ----- */
+    body.dark-mode {
+      background-color: var(--bg-color-dark);
+      color: var(--text-color-dark);
+    }
+
+    body.dark-mode header {
+      background-color: var(--header-bg-dark);
+      color: var(--header-text-dark);
+      box-shadow: 0 0 10px var(--header-bg-dark);
+    }
+
+    body.dark-mode #toggleThemeBtn {
+      background-color: var(--btn-bg-dark);
+      color: var(--btn-text-dark);
+    }
+    body.dark-mode #toggleThemeBtn:hover {
+      background-color: var(--btn-hover-bg-dark);
+    }
+
+    body.dark-mode .search-input, body.dark-mode .category-select {
+      background-color: #333;
+      border-color: #555;
+      color: var(--text-color-dark);
+    }
+
+    body.dark-mode .search-input:focus, body.dark-mode .category-select:focus {
+      border-color: var(--header-bg-dark);
+    }
+
+    body.dark-mode .container {
+      /* mesma grid */
+    }
+
+    body.dark-mode .app-card {
+      background-color: var(--card-bg-dark);
+      box-shadow: 0 4px 12px var(--card-shadow-dark);
+      color: var(--text-color-dark);
+    }
+
+    body.dark-mode .app-card:hover {
+      box-shadow: 0 6px 16px var(--btn-bg-dark);
+    }
+
+    body.dark-mode .app-icon {
+      background: #444;
+    }
+
+    body.dark-mode .app-title {
+      color: var(--header-bg-dark);
+    }
+
+    body.dark-mode .app-description {
+      color: var(--desc-color-dark);
+    }
+
+    body.dark-mode .download-btn {
+      background-color: var(--btn-bg-dark);
+      color: var(--btn-text-dark);
+    }
+
+    body.dark-mode .download-btn:hover {
+      background-color: var(--btn-hover-bg-dark);
+    }
+
+    /* Animação pulse no dark também */
+    body.dark-mode .downloading {
+      animation-name: pulseDark;
+    }
+
+    @keyframes pulseDark {
+      0%, 100% {
+        box-shadow: 0 0 8px 2px var(--btn-hover-bg-dark);
+      }
+      50% {
+        box-shadow: 0 0 20px 6px var(--btn-bg-dark);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    LDX Download's
+    <button id="toggleThemeBtn" aria-label="Alternar tema">Modo Escuro</button>
+  </header>
+
+  <div class="search-container">
+    <input type="text" class="search-input" placeholder="Buscar app..." onkeyup="filtrarApps()" aria-label="Buscar apps" />
+    <select class="category-select" onchange="filtrarApps()" aria-label="Selecionar categoria">
+      <option value="todas">Todas as Categorias</option>
+      <option value="Musica">Música</option>
+      <option value="Downloads">Downloads</option>
+      <option value="Jogos">Jogos</option>
+    </select>
+  </div>
+
+  <div class="container" id="appsContainer">
+    <!-- Apps (mesmo conteúdo do anterior) -->
+    <div class="app-card" data-categoria="Musica">
+      <img src="https://t.ctcdn.com.br/gwh6DjXb5g-t4fP2RZU4AFx_6y8=/i489934.jpeg" class="app-icon" alt="Spotify" />
+      <div class="app-title">Spotify Premium</div>
+      <div class="app-description">Streaming de músicas, podcasts e vídeos com milhões de faixas.</div>
+      <a href="Spotify Premium.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Downloads">
+      <img src="https://images.sftcdn.net/images/t_app-icon-m/p/04ea1167-70b0-4c18-9ca4-9b3a661a5b3a/1975285512/snaptube-all-video-downloader-logo" class="app-icon" alt="Snaptube" />
+      <div class="app-title">Snaptube</div>
+      <div class="app-description">Baixe vídeos e músicas de YouTube, Facebook e outras plataformas.</div>
+      <a href="Snaptube.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Downloads">
+      <img src="https://happymod.com/static/img/logo.png" class="app-icon" alt="HappyMod" />
+      <div class="app-title">HappyMod</div>
+      <div class="app-description">Loja de aplicativos para Android onde usuários podem baixar versões modificadas (mods) de jogos e aplicativos.</div>
+      <a href="HappyMod.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Downloads">
+      <img src="https://www.luckypatchers.com/wp-content/uploads/2018/01/Lucky-Patcher-icon.png" class="app-icon" alt="Lucky Patcher" />
+      <div class="app-title">Lucky Patcher</div>
+      <div class="app-description">Um app que pode modificar apps e jogos, bloquear anúncios, remover verificações de licença, etc.</div>
+      <a href="Lucky Patcher.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Jogos">
+      <img src="https://img-download.pchpic.net/download/1k7/gv/4r/rrplkp-mwd.png" class="app-icon" alt="火影战记" />
+      <div class="app-title">火影战记</div>
+      <div class="app-description">Jogo baseado no anime "Naruto". Escolha um ninja e lute destruindo as torres do oponente.</div>
+      <a href="火影战记.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Jogos">
+      <img src="https://a1.mzstatic.com/us/r1000/025/Purple/dc/d1/06/mzl.hwjhhozx.png" class="app-icon" alt="PES2011" />
+      <div class="app-title">PES2011</div>
+      <div class="app-description">Jogo de futebol com foco na liberdade de movimentação e controle da bola.</div>
+      <a href="PES2011.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Jogos">
+      <img src="https://play-lh.googleusercontent.com/oO2C5Re7SMZvbOT_FM9CG6q4FglmBKCyygSkQ9_zEIC2DtV1d_OAmN9f703z9-hB59kH" class="app-icon" alt="Anger of Stick 5 Zombie" />
+      <div class="app-title">Anger of Stick 5 Zombie</div>
+      <div class="app-description">Jogo 2D de ação com stickman lutando contra zumbis e inimigos.</div>
+      <a href="Anger of Stick 5 Zombie.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+    <div class="app-card" data-categoria="Jogos">
+      <img src="https://play-lh.googleusercontent.com/BoAvMI_6JGNRBp_3gFaVuLuqW_4J-rjtbR_giKFoJRvZmDiPtDlnLMur9cT7sTTfeos=s48-rw" class="app-icon" alt="Terraria" />
+      <div class="app-title">Terraria</div>
+      <div class="app-description">Jogo de ação e aventura 2D com elementos de RPG, plataforma e mundo aberto.</div>
+      <a href="Terraria.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+
+        <div class="app-card" data-categoria="Jogos">
+      <img src="https://cdn-images.dzcdn.net/images/cover/53bbd05af27e32f02040e0a3298ff8cc/0x1900-000000-80-0-0.jpg" class="app-icon" alt="Incredibox" />
+      <div class="app-title">Incredibox</div>
+      <div class="app-description">É um jogo/ferramenta musical onde os usuários criam músicas arrastando e soltando ícones em personagens para criar uma batida e melodia.</div>
+      <a href="Incredibox.apk" class="download-btn" download onclick="animarDownload(event)">Baixar</a>
+    </div>
+  </div>
+
+  <script>
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    const body = document.body;
+
+    // Verifica tema salvo no localStorage e aplica
+    if (localStorage.getItem('tema') === 'escuro') {
+      body.classList.add('dark-mode');
+      toggleThemeBtn.textContent = 'Modo Claro';
+    } else {
+      toggleThemeBtn.textContent = 'Modo Escuro';
+    }
+
+    toggleThemeBtn.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      if (body.classList.contains('dark-mode')) {
+        toggleThemeBtn.textContent = 'Modo Claro';
+        localStorage.setItem('tema', 'escuro');
+      } else {
+        toggleThemeBtn.textContent = 'Modo Escuro';
+        localStorage.setItem('tema', 'claro');
+      }
+    });
+
+    function filtrarApps() {
+      const termo = document.querySelector('.search-input').value.toLowerCase();
+      const categoriaSelecionada = document.querySelector('.category-select').value;
+      const apps = document.querySelectorAll('.app-card');
+
+      apps.forEach(app => {
+        const titulo = app.querySelector('.app-title').textContent.toLowerCase();
+        const descricao = app.querySelector('.app-description').textContent.toLowerCase();
+        const categoria = app.getAttribute('data-categoria');
+
+        const correspondeBusca = titulo.includes(termo) || descricao.includes(termo);
+        const correspondeCategoria = (categoriaSelecionada === "todas" || categoria === categoriaSelecionada);
+
+        app.style.display = (correspondeBusca && correspondeCategoria) ? 'block' : 'none';
+      });
+    }
+
+    function animarDownload(event) {
+      const btn = event.currentTarget;
+      btn.classList.add('downloading');
+      btn.textContent = 'Baixando...';
+
+      setTimeout(() => {
+        btn.classList.remove('downloading');
+        btn.textContent = 'Baixar';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
